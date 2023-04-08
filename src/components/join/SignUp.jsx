@@ -23,9 +23,28 @@ const SignUp = () => {
     setInput({ ...input, [name]: value });
   };
 
+  const postSignUp = async (input) => {
+    const result = await fetch(
+      "https://www.pre-onboarding-selection-task.shop/auth/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: input.email, password: input.password }),
+      }
+    )
+      .then((response) => {
+        if (response.status === 201) alert("회원가입이 완료되었습니다.");
+        else alert("회원가입에 실패하셨습니다.");
+      })
+      .catch((error) => {});
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(input);
+    localStorage.setItem(input.email, input.password);
+    postSignUp(input);
   };
 
   useEffect(() => {
