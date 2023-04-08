@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Layout,
   UseForm,
@@ -15,6 +16,7 @@ const EMAIL_REGEX = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$/;
 const PASSWORD_REGEX = /.{8,}/;
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [input, setInput] = useState({ email: "", password: "" });
   const [disable, setDisable] = useState(true);
 
@@ -35,8 +37,10 @@ const SignUp = () => {
       }
     )
       .then((response) => {
-        if (response.status === 201) alert("회원가입이 완료되었습니다.");
-        else alert("회원가입에 실패하셨습니다.");
+        if (response.status === 201) {
+          alert("회원가입이 완료되었습니다.");
+          navigate("/signin");
+        } else alert("회원가입에 실패하셨습니다.");
       })
       .catch((error) => {});
   };
