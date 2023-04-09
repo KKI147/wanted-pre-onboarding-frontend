@@ -60,6 +60,11 @@ const SignIn = () => {
     else setDisable(true);
   }, [input]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token !== null) navigate("/todo");
+  }, [navigate]);
+
   return (
     <Layout>
       <UseForm onSubmit={handleSubmit}>
