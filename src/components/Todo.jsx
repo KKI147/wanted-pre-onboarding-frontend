@@ -1,91 +1,72 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import List from "./List";
 import styled from "styled-components";
+import { BaseURL } from "../api";
+import { useState } from "react";
 
-const Todo = () => {
-  const navigate = useNavigate();
+const Todo = (rendering) => {
+  const [todo, setTodo] = useState("");
   const access_token = localStorage.getItem("access_token");
-  const [data, setData] = useState([]);
 
-  const getTodo = async () => {
-    const result = await fetch(
-      "https://www.pre-onboarding-selection-task.shop/todos",
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    )
+  const postTodo = async (todo) => {
+    await fetch(`${BaseURL}/todos`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ todo: todo }),
+    })
       .then((response) => {
-        return response.json();
+        if (response.status === 201) {
+          alert("게시글이 작성되었습니다..");
+          console.log(response);
+          return response.json();
+        }
       })
-      .then((response) => setData(response))
-      .catch((error) => {});
+      .then((response) => {
+        rendering.setRendering(response);
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("에러발생");
+      });
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token === null) navigate("/signin");
-  }, [navigate]);
-
-  useEffect(() => {
-    getTodo();
-  });
+  const onClickHandler = () => {
+    postTodo(todo);
+  };
 
   return (
     <Layout>
-      <Title>Todo</Title>
-      <List />
-      <ListWrapper>
-        {data.map((el, id) => {
-          return (
-            <li key={id}>
-              <label>
-                <input type="checkbox" />
-                <span>{el.todo}</span>
-              </label>
-              <Button data-testid="modify-button">수정</Button>
-              <Button data-testid="delete-button">삭제</Button>
-            </li>
-          );
-        })}
-      </ListWrapper>
+      <InPut
+        data-testid="new-todo-input"
+        value={todo}
+        onChange={(e) => setTodo(e.target.value)}
+      />
+      <Button data-testid="new-todo-add-button" onClick={onClickHandler}>
+        추가
+      </Button>
     </Layout>
   );
 };
+
 export default Todo;
 
 const Layout = styled.div`
-  display: inline-block;
-  margin: 50px auto 0;
   position: relative;
   width: 100%;
-  li {
-    list-style: none;
-  }
+  height: auto;
+  display: flex;
+  justify-content: center;
 `;
 
-const Title = styled.div`
-  margin: 12px 0 30px 0;
-  font-size: 26px;
-  font-weight: 500;
-  text-align: center;
-  color: #1d3763;
-`;
-
-const ListWrapper = styled.div`
-  /* display: flex; */
-  margin: 30px auto 0;
-  position: relative;
-  width: 50%;
-  background-color: orange;
+const InPut = styled.input`
+  width: 300px;
+  height: 30px;
+  margin: 0 25px 0;
 `;
 
 const Button = styled.button`
-  width: 50px;
-  height: 30px;
-  margin: 0 5px;
+  width: 100px;
   background-color: #379fff;
   color: #fff;
   border: 0;

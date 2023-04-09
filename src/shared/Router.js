@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../components/Home";
 import SignIn from "../components/join/SignIn";
 import SignUp from "../components/join/SignUp";
-import Todo from "../components/Todo";
+import List from "../components/List";
 
 const Router = () => {
   return (
@@ -11,7 +11,7 @@ const Router = () => {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/todo" element={<Todo />} />
+        <Route path="/todo" element={<List />} />
       </Routes>
     </BrowserRouter>
   );

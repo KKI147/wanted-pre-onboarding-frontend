@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseURL } from "../../api";
 import {
   Layout,
   UseForm,
@@ -26,26 +27,27 @@ const SignIn = () => {
   };
 
   const postSignIn = async (input) => {
-    const result = await fetch(
-      "https://www.pre-onboarding-selection-task.shop/auth/signin",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: input.email, password: input.password }),
-      }
-    )
+    await fetch(`${BaseURL}/auth/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: input.email, password: input.password }),
+    })
       .then((response) => {
         if (response.status === 200) {
-          alert("로그인이 완료되었습니다.");
-          navigate("/todo");
           return response.json();
         } else alert("로그인에 실패하셨습니다.");
       })
       .then((response) => {
         const access_token = response.access_token;
         localStorage.setItem("access_token", access_token);
+        alert("로그인이 완료되었습니다.");
+        navigate("/todo");
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("에러발생");
       });
   };
 

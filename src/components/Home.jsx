@@ -47,7 +47,10 @@ const NavigateButton = styled.button`
   height: 8%;
   margin: 15px 10px 0;
   background: transparent;
-  border: 1px solid orange;
+  border: 1px solid #379fff;
   border-radius: 24px;
   cursor: pointer;
+  :hover {
+    background-color: #379fff;
+  }
 `;

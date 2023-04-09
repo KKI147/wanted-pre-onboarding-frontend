@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BaseURL } from "../../api";
 import { useNavigate } from "react-router-dom";
 import {
   Layout,
@@ -26,23 +27,23 @@ const SignUp = () => {
   };
 
   const postSignUp = async (input) => {
-    const result = await fetch(
-      "https://www.pre-onboarding-selection-task.shop/auth/signup",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: input.email, password: input.password }),
-      }
-    )
+    await fetch(`${BaseURL}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: input.email, password: input.password }),
+    })
       .then((response) => {
         if (response.status === 201) {
           alert("회원가입이 완료되었습니다.");
           navigate("/signin");
         } else alert("회원가입에 실패하셨습니다.");
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.error(error);
+        alert("에러발생");
+      });
   };
 
   const handleSubmit = (e) => {
