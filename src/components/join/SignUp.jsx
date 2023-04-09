@@ -48,7 +48,6 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem(input.email, input.password);
     postSignUp(input);
   };
 

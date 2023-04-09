@@ -18,7 +18,6 @@ const Todo = (rendering) => {
       .then((response) => {
         if (response.status === 201) {
           alert("게시글이 작성되었습니다..");
-          console.log(response);
           return response.json();
         }
       })
