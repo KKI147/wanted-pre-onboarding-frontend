@@ -10,8 +10,8 @@ const List = () => {
   const [data, setData] = useState([]);
   const [rendering, setRendering] = useState();
   const [check, setCheck] = useState(false);
-  const [edit, setEdit] = useState(false);
   const [content, setContent] = useState("");
+  const [target, setTarget] = useState([]);
 
   const getTodo = async () => {
     await fetch(`${BaseURL}/todos`, {
@@ -78,74 +78,81 @@ const List = () => {
         {data && data.length > 0
           ? data.map((el, index) => {
               const id = el.id;
+              let editState = target.indexOf(id) === -1 ? false : true;
               return (
-                <LiTag key={id}>
-                  {edit === false ? (
-                    <>
-                      <LabelBox>
-                        <CheckInput
-                          type="checkbox"
-                          value={check}
-                          onChange={() => setCheck(!check)}
-                        />
-                        <Content>{el.todo}</Content>
-                      </LabelBox>
-                      <ButtonBox>
-                        <Button
-                          data-testid="modify-button"
-                          value={edit}
-                          onClick={() => setEdit(!edit)}
-                        >
-                          수정
-                        </Button>
-                        <Button
-                          data-testid="delete-button"
-                          onClick={() => {
-                            if (window.confirm("댓글을 삭제하시겠습니까?"))
-                              deleteTodo(id);
-                            else alert("취소되었습니다.");
-                          }}
-                        >
-                          삭제
-                        </Button>
-                      </ButtonBox>
-                    </>
-                  ) : (
-                    <>
-                      <LabelBox>
-                        <CheckInput
-                          type="checkbox"
-                          value={check}
-                          onChange={() => setCheck(!check)}
-                        />
-                        <input
-                          data-testid="modify-input"
-                          type="text"
-                          defaultValue={el.todo}
-                          onChange={(e) => setContent(e.target.value)}
-                        />
-                      </LabelBox>
-                      <ButtonBox>
-                        <Button
-                          data-testid="submit-button"
-                          value={edit}
-                          onClick={() => {
-                            updateTodo(id);
-                            setEdit(!edit);
-                          }}
-                        >
-                          제출
-                        </Button>
-                        <Button
-                          data-testid="cancel-button"
-                          onClick={() => setEdit(!edit)}
-                        >
-                          취소
-                        </Button>
-                      </ButtonBox>
-                    </>
-                  )}
-                </LiTag>
+                <>
+                  <LiTag key={id}>
+                    {!editState ? (
+                      <>
+                        <LabelBox>
+                          <CheckInput
+                            type="checkbox"
+                            value={check}
+                            onChange={() => setCheck(!check)}
+                          />
+                          <Content>{el.todo}</Content>
+                        </LabelBox>
+                        <ButtonBox>
+                          <Button
+                            data-testid="modify-button"
+                            onClick={() => {
+                              if (target.indexOf(id) === -1) {
+                                setTarget((prev) => [...prev, id]);
+                              }
+                            }}
+                          >
+                            수정
+                          </Button>
+                          <Button
+                            data-testid="delete-button"
+                            onClick={() => {
+                              if (window.confirm("댓글을 삭제하시겠습니까?"))
+                                deleteTodo(id);
+                              else alert("취소되었습니다.");
+                            }}
+                          >
+                            삭제
+                          </Button>
+                        </ButtonBox>
+                      </>
+                    ) : (
+                      <>
+                        <LabelBox>
+                          <CheckInput
+                            type="checkbox"
+                            value={check}
+                            onChange={() => setCheck(!check)}
+                          />
+                          <input
+                            data-testid="modify-input"
+                            type="text"
+                            defaultValue={el.todo}
+                            onChange={(e) => setContent(e.target.value)}
+                          />
+                        </LabelBox>
+                        <ButtonBox>
+                          <Button
+                            data-testid="submit-button"
+                            onClick={() => {
+                              updateTodo(id);
+                              setTarget(target.filter((el) => el !== id));
+                            }}
+                          >
+                            제출
+                          </Button>
+                          <Button
+                            data-testid="cancel-button"
+                            onClick={() =>
+                              setTarget(target.filter((el) => el !== id))
+                            }
+                          >
+                            취소
+                          </Button>
+                        </ButtonBox>
+                      </>
+                    )}
+                  </LiTag>
+                </>
               );
             })
           : ""}
